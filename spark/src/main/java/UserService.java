@@ -21,7 +21,7 @@ public interface UserService {
 
         }
 
-        public static void sendMail(){
+        public static void sendMail(String to, String subject){
             final String username = "grattepanche.robin@gmail.com";
             final String password = "azerty--66";
 
@@ -43,8 +43,8 @@ public interface UserService {
                 Message message = new MimeMessage(session);
                 message.setFrom(new InternetAddress("grattepanche.robin@gmail.com"));
                 message.setRecipients(Message.RecipientType.TO,
-                        InternetAddress.parse("grattepanche.robin@gmail.com"));
-                message.setSubject("Testing Subject");
+                        InternetAddress.parse(to));
+                message.setSubject(subject);
                 message.setText("Dear Mail Crawler,"
                         + "\n\n test mail api");
 

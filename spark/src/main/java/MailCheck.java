@@ -44,10 +44,12 @@ public class MailCheck {
             return list;
         });
 
-        post("/mail/sendMail", (req, res) -> {
+        post("/mail/sendMail/", (req, res) -> {
             //mail.sendMail();
-            UserService.sendMail();
-            return "";
+            String to = req.queryParams("to");
+            String subject = req.queryParams("subject");
+            UserService.sendMail(to, subject);
+            return to;
         });
     }
 
