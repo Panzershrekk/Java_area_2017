@@ -5,7 +5,8 @@ import java.util.List;
 
 public class TwitterModul {
 
-    Twitter twitter;
+    private Twitter twitter;
+    private ResponseList<Status>    timeline;
 
     public TwitterModul() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -17,6 +18,13 @@ public class TwitterModul {
                 .setOAuthAccessTokenSecret("4Yx5KgWPmgpzWQ2AEzN58bykrmPiMrZr9TSoYuKSH28hP");
         TwitterFactory tf = new TwitterFactory(cb.build());
         twitter = tf.getInstance();
+        try {
+            timeline = twitter.getUserTimeline();
+        }
+        catch (TwitterException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public String twitterTest() {
@@ -51,5 +59,26 @@ public class TwitterModul {
             System.out.println(e);
         }
 
+    }
+
+    public void displayNewTweets() {
+        try {
+            ResponseList<Status> newTimeline = twitter.getUserTimeline();
+            if (newTimeline.removeAll((timeline))) {
+                if (newTimeline.isEmpty()) {
+                    System.out.println("There is no new tweet");
+                } else {
+                    for (Status s :
+                            newTimeline) {
+                        System.out.println("New Tweet : " + s.getText());
+                    }
+                    timeline = twitter.getUserTimeline();
+                }
+            }
+            //TwitterUtils.createStream(jssc);
+        }
+        catch (TwitterException e) {
+            System.out.println(e);
+        }
     }
 }
