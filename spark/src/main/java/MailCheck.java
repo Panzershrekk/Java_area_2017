@@ -1,3 +1,7 @@
+import com.google.gson.*;
+import com.fasterxml.jackson.databind.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonSerializer;
 import com.googlecode.gmail4j.EmailAddress;
 import com.googlecode.gmail4j.GmailClient;
 import com.googlecode.gmail4j.GmailConnection;
@@ -13,8 +17,13 @@ import com.sun.security.ntlm.Client;
 
 import javax.jws.soap.SOAPBinding;
 import javax.mail.*;
+import javax.json.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -29,6 +38,19 @@ public class MailCheck {
     public MailCheck() {
 
     }
+
+    public static class MessageAdapter implements JsonSerializer<Message> {
+        public JsonElement serialize(Message src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.toString());
+        }
+    }
+
+    private static Gson getGsonParser(Object o) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(o.getClass(), new MessageAdapter());
+        return gsonBuilder.create();
+    }
+
 
     public static void main(String[] inArgs) {
 
@@ -45,23 +67,48 @@ public class MailCheck {
             String password = "azerty--66";// change accordingly
             String from = req.params(":from");
 
-            UserService.getMailByAdress(host, mailStoreType, username, password, from);
-            return "";
+            ArrayList<Message> mFrom = UserService.getMailByAdress(host, mailStoreType, username, password, from);
+
+            ArrayList<ArrayList<String>> messages = new ArrayList<ArrayList<String>>();
+            int i = 0;
+            for (Message mes : mFrom) {
+                MessageJson msg = new MessageJson(mes, i);
+                messages.add(msg.createJson());
+                i += 1;
+            }
+            return messages;
         });
 
+
+        GsonBuilder gson = new GsonBuilder();
+        gson.registerTypeAdapter(Message.class, new MessageAdapter());
         get("/mail/unread", (req, res) -> {
-            UserService.getUnreadMail();
-            return "";
+            ArrayList<Message> unread = UserService.getUnreadMail();
+            ArrayList<ArrayList<String>> messages = new ArrayList<ArrayList<String>>();
+            int i = 0;
+            for (Message mes : unread) {
+                MessageJson msg = new MessageJson(mes, i);
+                messages.add(msg.createJson());
+                i += 1;
+            }
+            return messages;
         });
 
-        get("/mail", (req, res) -> {
+        get("/mail/all", (req, res) -> {
             String host = "pop.gmail.com";// change accordingly
             String mailStoreType = "pop3";
             String username = "grattepanche.robin@gmail.com";// change accordingly
             String password = "azerty--66";// change accordingly
 
-            UserService.getAllMail(host, mailStoreType, username, password);
-            return "";
+            Message[] all = UserService.getAllMail(host, mailStoreType, username, password);
+            ArrayList<ArrayList<String>> messages = new ArrayList<ArrayList<String>>();
+            int i = 0;
+            for (Message mes : all) {
+                MessageJson msg = new MessageJson(mes, i);
+                messages.add(msg.createJson());
+                i += 1;
+            }
+            return messages;
         });
 
         post("/mail/sendMail/", (req, res) -> {
@@ -70,7 +117,8 @@ public class MailCheck {
             String subject = req.queryParams("subject");
 	        String content = req.queryParams("content");
             UserService.sendMail(to, subject, content);
-            return to;
+            res.status(200);
+            return res.toString();
         });
     }
 

@@ -1,3 +1,4 @@
+import com.google.gson.*;
 import com.googlecode.gmail4j.GmailClient;
 import com.googlecode.gmail4j.GmailMessage;
 import org.eclipse.jetty.server.Authentication;
@@ -9,49 +10,46 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.search.FlagTerm;
 import javax.mail.search.FromTerm;
 import javax.mail.search.SearchTerm;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public interface UserService {
-
-        public static void getMailByAdress(String host, String storeType, String user, String password, String from){
+        public static ArrayList<Message> getMailByAdress(String host, String storeType, String user, String password, String from){
             try {
-            Properties properties = new Properties();
 
-            properties.put("mail.pop3.host", host);
-            properties.put("mail.pop3.port", "995");
-            properties.put("mail.pop3.starttls.enable", "true");
-            Session emailSession = Session.getDefaultInstance(properties);
+                Properties properties = new Properties();
+                properties.put("mail.pop3.host", host);
+                properties.put("mail.pop3.port", "995");
+                properties.put("mail.pop3.starttls.enable", "true");
+                Session emailSession = Session.getDefaultInstance(properties);
 
+                Store store = emailSession.getStore("pop3s");
 
-            Store store = emailSession.getStore("pop3s");
+                store.connect(host, user, password);
 
-            store.connect(host, user, password);
+                Folder emailFolder = store.getFolder("INBOX");
+                emailFolder.open(Folder.READ_ONLY);
 
+                SearchTerm sender = new FromTerm(new InternetAddress(from));
+                Message[] messages = emailFolder.search(sender);
 
-            Folder emailFolder = store.getFolder("INBOX");
-            emailFolder.open(Folder.READ_ONLY);
+                ArrayList<Message> out = new ArrayList<Message>();
 
-
-             SearchTerm sender = new FromTerm(new InternetAddress(from));
-             Message[] messages = emailFolder.search(sender);
 
             for (int i = 0, n = messages.length; i < n; i++) {
                 Message message = messages[i];
-
                 System.out.println("=================================");
                 System.out.println("Email Number " + (i + 1));
                 System.out.println("Subject: " + message.getSubject());
                 System.out.println("From: " + message.getFrom()[0]);
                 System.out.println("Text: " + message.getContent().toString());
-
+                out.add(message);
             }
 
-            //close the store and folder objects
+                //close the store and folder objects
             emailFolder.close(false);
             store.close();
+            return out;
 
             } catch (NoSuchProviderException e) {
             e.printStackTrace();
@@ -60,9 +58,10 @@ public interface UserService {
             } catch (Exception e) {
             e.printStackTrace();
             }
+            return null;
         }
 
-        public static void getUnreadMail() throws Exception {
+        public static ArrayList<Message> getUnreadMail() throws Exception {
 
             Session session = Session.getDefaultInstance(new Properties( ));
             Store store = session.getStore("imaps");
@@ -83,16 +82,20 @@ public interface UserService {
                 }
             } );
 
+            ArrayList<Message> out = new ArrayList<Message>();
+
             for ( Message message : messages ) {
                 System.out.println("---------------------------------");
                 System.out.println("SendDate: " + message.getSentDate());
                 System.out.println("Subject:" + message.getSubject());
                 System.out.println("From:" + message.getFrom()[0]);
                 System.out.println("Text:" + message.getContent().toString());
+                out.add(message);
             }
+            return out;
         }
 
-        public static void getAllMail(String host, String storeType, String user, String password) {
+        public static Message[] getAllMail(String host, String storeType, String user, String password) {
             try {
 
                 //create properties field
@@ -130,7 +133,7 @@ public interface UserService {
                 //close the store and folder objects
                 emailFolder.close(false);
                 store.close();
-
+                return messages;
             } catch (NoSuchProviderException e) {
                 e.printStackTrace();
             } catch (MessagingException e) {
@@ -138,6 +141,7 @@ public interface UserService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            return null;
         }
 
     public static void sendMail(String to, String subject, String content){
