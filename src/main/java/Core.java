@@ -1,3 +1,5 @@
+import spark.Request;
+import spark.Response;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
@@ -32,5 +34,17 @@ public class Core {
             twitos.displayNewTweets();
             return "It works well !";
         });
+
+        post("/post/facebook", (request, response) -> {
+            return "Worked";
+        });
+
+        get("/get/facebook", (request, response) -> {
+            //request.params)
+            System.out.println("get");
+            System.out.println(request.);
+            return "";
+        });
+
     }
 }
