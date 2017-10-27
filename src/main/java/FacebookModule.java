@@ -2,10 +2,16 @@ import facebook4j.*;
 import facebook4j.auth.AccessToken;
 import facebook4j.conf.ConfigurationBase;
 import facebook4j.conf.ConfigurationBuilder;
+import facebook4j.internal.org.json.JSONObject;
+import spark.Request;
+import spark.Response;
 
 public class FacebookModule extends Modules {
 
     private Facebook facebook;
+    private String mode = "suscribe";
+    private String verifyToken = "123456789";
+    private String hub = "";
 
     public FacebookModule() {
 
@@ -61,5 +67,28 @@ public class FacebookModule extends Modules {
             e.printStackTrace();
         }
 
+    }
+
+    public String getSuscribe(Request request, Response response) {
+        if (request.queryParams("hub.mode").equals(mode) &&
+                request.queryParams("hub.verify_token").equals(verifyToken)) {
+            hub = request.queryParams("hub.challenge");
+            return (hub);
+        }
+        response.status(200);
+        return ("");
+    }
+
+    public String postData(Request request, Response response) {
+        System.out.println(request.body());
+        try {
+            JSONObject jsonObj = new JSONObject(request.body());
+            System.out.println("Json = " + jsonObj);
+        }
+        catch (Exception e) {
+            e.fillInStackTrace();
+        }
+        response.status(200);
+        return (hub);
     }
 }

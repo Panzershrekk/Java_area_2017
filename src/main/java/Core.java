@@ -35,16 +35,8 @@ public class Core {
             return "It works well !";
         });
 
-        post("/post/facebook", (request, response) -> {
-            return "Worked";
-        });
+        post("/get/facebook", (request, response) -> facebook.postData(request, response));
 
-        get("/get/facebook", (request, response) -> {
-            //request.params)
-            System.out.println("get");
-            System.out.println(request.);
-            return "";
-        });
-
+        get("/get/facebook", (request, response) -> (facebook.getSuscribe(request,response)));
     }
 }
