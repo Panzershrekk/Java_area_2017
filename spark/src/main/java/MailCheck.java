@@ -48,7 +48,8 @@ public class MailCheck {
             //mail.sendMail();
             String to = req.queryParams("to");
             String subject = req.queryParams("subject");
-            UserService.sendMail(to, subject);
+	    String content = req.queryParams("content");
+            UserService.sendMail(to, subject, content);
             return to;
         });
     }

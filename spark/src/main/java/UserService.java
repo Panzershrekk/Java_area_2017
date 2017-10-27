@@ -21,7 +21,7 @@ public interface UserService {
 
         }
 
-        public static void sendMail(String to, String subject){
+    public static void sendMail(String to, String subject, String content){
             final String username = "grattepanche.robin@gmail.com";
             final String password = "azerty--66";
 
@@ -45,8 +45,7 @@ public interface UserService {
                 message.setRecipients(Message.RecipientType.TO,
                         InternetAddress.parse(to));
                 message.setSubject(subject);
-                message.setText("Dear Mail Crawler,"
-                        + "\n\n test mail api");
+                message.setText(content);
 
                 Transport.send(message);
 
