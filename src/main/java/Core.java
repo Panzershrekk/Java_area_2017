@@ -1,15 +1,28 @@
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
+import twitter4j.conf.ConfigurationBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static spark.Spark.*;
 
-public class HelloWorld {
+public class Core {
     public static void main(String[] args) {
-        TwitterModul twitos = new TwitterModul();
+        TwitterModule twitos = new TwitterModule();
+
+        //FacebookModule facebook = new FacebookModule();
+        List<Modules> ModuleList = new ArrayList<>();
+        ModuleList.add(twitos);
+        //ModuleList.add(facebook);
+
 
         get("/get/twitos", (request, response) -> {
             return twitos.getTweet();
         });
 
         get("/post/twitter/:msg", (request, response) -> {
-            twitos.postTweet(request.params(":msg"));
+            twitos.postTweet(request.params(":msg"), ModuleList);
             return "Worked";
         });
         get("/displayTweet/", (request, response) -> {
