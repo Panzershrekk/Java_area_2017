@@ -5,7 +5,6 @@ import facebook4j.conf.ConfigurationBuilder;
 
 public class FacebookModule extends Modules {
 
-    private String moduleName;
     private Facebook facebook;
 
     public FacebookModule() {
@@ -17,11 +16,9 @@ public class FacebookModule extends Modules {
                     .setOAuthAppId("748909205316555")
                     .setOAuthAppSecret("2a0e3d5c7be1b2453e1e4ecb9fd0e040")
                     .setOAuthPermissions("publish_actions")
-                    .setOAuthAccessToken("EAAKpIQMm48sBACSKf6XFTtuBHQjsFJp4IbkKb9X24tW49zxrs7PGClkm43ctDVZChPktnZAL25BPbTfKknDy1sKGaTjHOXojayzaSTXrzRylleTSGmxZAZBtGyrZBrJrgaIXWm5jtWJWh4AXPbmy4P5aZBOLyw0eaE7fQIRfRS5agk4gsdNZAjH5Fy0BZAI3Jo6dLlx0d2ZCwECfuC275tkc7O4TbMl7gK0MeGIzZBoIen4xqbRLbFQl3D");
+                    .setOAuthAccessToken("EAAKpIQMm48sBADc5PM7TeTGEehGzd4yM94kl3B7wsgO5VEfE4p39PmoIkZA5NBrZAW5ibO0xMqMUrwVbV2jmeJzhs1xFr9z40RisatnbaHhz46qGclEa5MEzZCR3Q7unyuZBI3V3jEtzGGUsyaQ2MxDbtUaMFuHj3deZAgWiyvgEsnrRzVUcj7P15xu8eWOkSUTrZBWZARLcOorB9H4oYw0XPtTr9xZBCpsHbKnyXfyFiQZDZD");
             FacebookFactory fb = new FacebookFactory(cb.build());
             this.facebook = fb.getInstance();
-            System.out.println(this.facebook.getName());
-
         }
         catch (Exception e)
         {
@@ -46,6 +43,18 @@ public class FacebookModule extends Modules {
     {
         try {
             facebook.postStatusMessage(msg);
+        }
+        catch (FacebookException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteFacebook(String msg)
+    {
+        try {
+            Post post = facebook.getPosts(msg).get(0);
+            facebook.deletePost(post.getId());
         }
         catch (FacebookException e)
         {

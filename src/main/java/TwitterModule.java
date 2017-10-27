@@ -9,6 +9,7 @@ public class TwitterModule extends Modules {
     private Twitter twitter;
     private TwitterFactory tf;
     private ResponseList<Status>    timeline;
+    private TwitterStreamInit twitterListener;
 
     public TwitterModule() {
         setModuleName("Twitter");
@@ -32,16 +33,13 @@ public class TwitterModule extends Modules {
                     .setOAuthConsumerSecret("dnr2QSlGlq5dyiecgZqLDBdtqYpfXN7a5MCwH9AkgYAozgrBJ6")
                     .setOAuthAccessToken("922446818033664001-wwrq7uhrWDJGdrWONt9W1n9208KrSER")
                     .setOAuthAccessTokenSecret("4Yx5KgWPmgpzWQ2AEzN58bykrmPiMrZr9TSoYuKSH28hP");
-            TwitterStreamInit twitterListener = new TwitterStreamInit();
+            twitterListener = new TwitterStreamInit();
 
             FilterQuery fq = new FilterQuery();
-
-            String keywords[] = {"ireland"};
-
+            fq.follow(twitter.getId());
             TwitterStream twitterStream = new TwitterStreamFactory(bc.build()).getInstance();
             twitterStream.addListener(twitterListener);
             twitterStream.filter(fq);
-            twitterStream.sample();
 
         }
         catch (Exception e)
@@ -109,5 +107,9 @@ public class TwitterModule extends Modules {
         catch (TwitterException e) {
             System.out.println(e);
         }
+    }
+
+    public TwitterStreamInit getTwitterListener() {
+        return twitterListener;
     }
 }

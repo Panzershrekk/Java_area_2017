@@ -1,3 +1,4 @@
+import facebook4j.api.FavoriteMethods;
 import twitter4j.*;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
@@ -5,9 +6,16 @@ import twitter4j.StallWarning;
 import twitter4j.StatusListener;
 
 public class TwitterStreamInit implements StatusListener {
+    FacebookModule facebookModule;
+
+    public void setFacebookModule(FacebookModule facebookModule) {
+        this.facebookModule = facebookModule;
+    }
+
     @Override
     public void onStatus(Status status) {
-        System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+        //System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+        facebookModule.postFacebook("From Twitter @" + status.getUser().getScreenName() + " - " + status.getText());
     }
 
     @Override

@@ -10,11 +10,13 @@ import static spark.Spark.*;
 public class Core {
     public static void main(String[] args) {
         TwitterModule twitos = new TwitterModule();
+        FacebookModule facebook = new FacebookModule();
 
-        //FacebookModule facebook = new FacebookModule();
         List<Modules> ModuleList = new ArrayList<>();
         ModuleList.add(twitos);
-        //ModuleList.add(facebook);
+        ModuleList.add(facebook);
+
+        twitos.getTwitterListener().setFacebookModule(facebook);
 
 
         get("/get/twitos", (request, response) -> {
