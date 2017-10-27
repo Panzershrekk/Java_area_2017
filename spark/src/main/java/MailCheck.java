@@ -38,10 +38,20 @@ public class MailCheck {
 
         MailCheck mail = new MailCheck();
 
+        get("/mail/getMail/:from", (req, res) -> {
+            String host = "pop.gmail.com";// change accordingly
+            String mailStoreType = "pop3";
+            String username = "grattepanche.robin@gmail.com";// change accordingly
+            String password = "azerty--66";// change accordingly
+            String from = req.params(":from");
+
+            UserService.getMailByAdress(host, mailStoreType, username, password, from);
+            return "";
+        });
+
         get("/mail/unread", (req, res) -> {
-            List<GmailMessage> list = UserService.getMail(client);
-//            List<GmailMessage> list = mail.getMail(client);
-            return list;
+            UserService.getUnreadMail();
+            return "";
         });
 
         get("/mail", (req, res) -> {
