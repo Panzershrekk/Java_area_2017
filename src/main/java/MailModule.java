@@ -96,6 +96,12 @@ public class MailModule extends Modules {
         return null;
     }
 
+    public String postMailReactModule(String to, String subject, String content)
+    {
+     UserService.sendMail(to, subject, content);
+     return "200 OK";
+    }
+
     public static void main(String[] inArgs) {
 
         MailModule mail = new MailModule();

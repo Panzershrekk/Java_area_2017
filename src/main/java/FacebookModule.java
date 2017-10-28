@@ -22,7 +22,7 @@ public class FacebookModule extends Modules {
                     .setOAuthAppId("748909205316555")
                     .setOAuthAppSecret("2a0e3d5c7be1b2453e1e4ecb9fd0e040")
                     .setOAuthPermissions("publish_actions")
-                    .setOAuthAccessToken("EAAKpIQMm48sBADc5PM7TeTGEehGzd4yM94kl3B7wsgO5VEfE4p39PmoIkZA5NBrZAW5ibO0xMqMUrwVbV2jmeJzhs1xFr9z40RisatnbaHhz46qGclEa5MEzZCR3Q7unyuZBI3V3jEtzGGUsyaQ2MxDbtUaMFuHj3deZAgWiyvgEsnrRzVUcj7P15xu8eWOkSUTrZBWZARLcOorB9H4oYw0XPtTr9xZBCpsHbKnyXfyFiQZDZD");
+                    .setOAuthAccessToken("EAAKpIQMm48sBAGlZA5Nrb6y7178GJkkIotp4ZABKifdy6nQFhFjbbXe08uZAvGRU3UxqnArXREaWkqIdXnV1qEoYp3FE0fX1BINnw5XCNBzGMkkXPj3w7DkgN1ySeYjfLkV8cH5sJlWG5NlG6L71Lf3Li4vlrrd8grV9GxXEjsNZBZB4dKZBoMlcJZCzJt0bpOf9NjV8a5JdKGn5JnzjfKeAwA7sSuKVePvWr4eOhTR3wZDZD");
             FacebookFactory fb = new FacebookFactory(cb.build());
             this.facebook = fb.getInstance();
         }

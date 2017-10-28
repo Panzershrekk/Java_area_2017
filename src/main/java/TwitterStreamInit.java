@@ -7,14 +7,21 @@ import twitter4j.StatusListener;
 
 public class TwitterStreamInit implements StatusListener {
     FacebookModule facebookModule;
+    MailModule mailModule;
 
     public void setFacebookModule(FacebookModule facebookModule) {
         this.facebookModule = facebookModule;
     }
 
+    public void setMailModule(MailModule mailModule) {
+        this.mailModule = mailModule;
+    }
+
     @Override
     public void onStatus(Status status) {
         //System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+        mailModule.postMailReactModule("grattepanche.robin@gmail.com", "New Tweet incoming",
+                "You got a notification !\n" + status.getText());
         facebookModule.postFacebook("From Twitter @" + status.getUser().getScreenName() + " - " + status.getText());
     }
 

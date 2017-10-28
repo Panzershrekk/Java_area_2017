@@ -79,13 +79,6 @@ public class TwitterModule extends Modules {
         catch (TwitterException e) {
             System.out.println(e);
         }
-
-        for (Modules m : Modules)
-        {
-            if (m.getModuleName().compareTo("Facebook") == 0)
-                ((FacebookModule)m).postFacebook(msg);
-        }
-
     }
 
     public void displayNewTweets() {

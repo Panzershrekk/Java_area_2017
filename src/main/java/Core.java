@@ -21,14 +21,16 @@ public class Core {
         ModuleList.add(mail);
 
         twitos.getTwitterListener().setFacebookModule(facebook);
+        twitos.getTwitterListener().setMailModule(mail);
 
 
         get("/get/twitos", (request, response) -> {
             return twitos.getTweet();
         });
 
-        get("/post/twitter/:msg", (request, response) -> {
-            twitos.postTweet(request.params(":msg"), ModuleList);
+        post("/post/twitter", (request, response) -> {
+            String msg = request.queryParams("msg");
+            twitos.postTweet(msg, ModuleList);
             return "Worked";
         });
         get("/displayTweet/", (request, response) -> {
