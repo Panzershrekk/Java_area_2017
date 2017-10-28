@@ -46,8 +46,6 @@ public interface UserService {
                 out.add(message);
             }
 
-            emailFolder.close(false);
-            store.close();
             return out;
 
             } catch (NoSuchProviderException e) {

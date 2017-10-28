@@ -30,6 +30,11 @@ public class MailModule extends Modules {
         String username = "grattepanche.robin@gmail.com";
         String password = "azerty--66";
         String from = req.params(":from");
+        if (from == null) {
+            ArrayList<String> rep = new ArrayList<String>();
+            rep.add("Error null parameter");
+            return rep;
+        }
 
         ArrayList<Message> mFrom = UserService.getMailByAdress(host, mailStoreType, username, password, from);
 
