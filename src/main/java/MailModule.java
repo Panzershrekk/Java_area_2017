@@ -11,11 +11,12 @@ import java.util.List;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
-public class MailModule {
+public class MailModule extends Modules {
 
     private static List<GmailMessage> myMail;
 
     public MailModule() {
+        setModuleName("Mail");
         GmailClient client = new RssGmailClient();
         GmailConnection connection = new HttpGmailConnection("grattepanche.robin@gmail.com", "azerty--66".toCharArray());
         client.setConnection(connection);

@@ -13,10 +13,12 @@ public class Core {
     public static void main(String[] args) {
         TwitterModule twitos = new TwitterModule();
         FacebookModule facebook = new FacebookModule();
+        MailModule mail = new MailModule();
 
         List<Modules> ModuleList = new ArrayList<>();
         ModuleList.add(twitos);
         ModuleList.add(facebook);
+        ModuleList.add(mail);
 
         twitos.getTwitterListener().setFacebookModule(facebook);
 
@@ -38,5 +40,10 @@ public class Core {
         post("/get/facebook", (request, response) -> facebook.postData(request, response));
 
         get("/get/facebook", (request, response) -> (facebook.getSuscribe(request,response)));
+
+        mail.getAllMailModule();
+        mail.getFromMailModule();
+        mail.getUnreadMailModule();
+        mail.postMailModule();
     }
 }
