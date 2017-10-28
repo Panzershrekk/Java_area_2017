@@ -36,52 +36,36 @@ public class MailCheck {
     private static List<GmailMessage> myMail;
 
     public MailCheck() {
-
-    }
-
-    public static class MessageAdapter implements JsonSerializer<Message> {
-        public JsonElement serialize(Message src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.toString());
-        }
-    }
-
-    private static Gson getGsonParser(Object o) {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(o.getClass(), new MessageAdapter());
-        return gsonBuilder.create();
-    }
-
-
-    public static void main(String[] inArgs) {
-
         GmailClient client = new RssGmailClient();
         GmailConnection connection = new HttpGmailConnection("grattepanche.robin@gmail.com", "azerty--66".toCharArray());
         client.setConnection(connection);
+    }
 
-        MailCheck mail = new MailCheck();
-
+    public ArrayList<String> getFromMailModule()
+    {
         get("/mail/getMail/:from", (req, res) -> {
-            String host = "pop.gmail.com";// change accordingly
-            String mailStoreType = "pop3";
-            String username = "grattepanche.robin@gmail.com";// change accordingly
-            String password = "azerty--66";// change accordingly
-            String from = req.params(":from");
+        String host = "pop.gmail.com";
+        String mailStoreType = "pop3";
+        String username = "grattepanche.robin@gmail.com";
+        String password = "azerty--66";
+        String from = req.params(":from");
 
-            ArrayList<Message> mFrom = UserService.getMailByAdress(host, mailStoreType, username, password, from);
+        ArrayList<Message> mFrom = UserService.getMailByAdress(host, mailStoreType, username, password, from);
 
-            ArrayList<ArrayList<String>> messages = new ArrayList<ArrayList<String>>();
-            int i = 0;
-            for (Message mes : mFrom) {
-                MessageJson msg = new MessageJson(mes, i);
-                messages.add(msg.createJson());
-                i += 1;
-            }
-            return messages;
-        });
+        ArrayList<ArrayList<String>> messages = new ArrayList<ArrayList<String>>();
+        int i = 0;
+        for (Message mes : mFrom) {
+             MessageJson msg = new MessageJson(mes, i);
+             messages.add(msg.createJson());
+             i += 1;
+        }
+        return messages;
+      });
+        return null;
+    }
 
-
-        GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(Message.class, new MessageAdapter());
+    public ArrayList<String> getUnreadMailModule()
+    {
         get("/mail/unread", (req, res) -> {
             ArrayList<Message> unread = UserService.getUnreadMail();
             ArrayList<ArrayList<String>> messages = new ArrayList<ArrayList<String>>();
@@ -93,7 +77,11 @@ public class MailCheck {
             }
             return messages;
         });
+        return null;
+    }
 
+    public ArrayList<String> getAllMailModule()
+    {
         get("/mail/all", (req, res) -> {
             String host = "pop.gmail.com";// change accordingly
             String mailStoreType = "pop3";
@@ -110,63 +98,33 @@ public class MailCheck {
             }
             return messages;
         });
+        return null;
+    }
 
+    public String postMailModule()
+    {
         post("/mail/sendMail/", (req, res) -> {
             //mail.sendMail();
             String to = req.queryParams("to");
             String subject = req.queryParams("subject");
-	        String content = req.queryParams("content");
+            String content = req.queryParams("content");
             UserService.sendMail(to, subject, content);
             res.status(200);
-            return res.toString();
+            return "200 OK";
         });
+        return null;
     }
 
-    /*public static void sendMail() {
-        final String username = "grattepanche.robin@gmail.com";
-        final String password = "azerty--66";
+    public static void main(String[] inArgs) {
 
-        Properties props = new Properties();
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        MailCheck mail = new MailCheck();
 
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+        mail.getFromMailModule();
 
-        try {
+        mail.getUnreadMailModule();
 
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("grattepanche.robin@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse("grattepanche.robin@gmail.com"));
-            message.setSubject("Testing Subject");
-            message.setText("Dear Mail Crawler,"
-                    + "\n\n test mail api");
+        mail.getAllMailModule();
 
-            Transport.send(message);
-
-            System.out.println("Done");
-
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
-
-    /*public List<GmailMessage> getMail(GmailClient client){
-       final List<GmailMessage> messages = client.getUnreadMessages();
-         for (GmailMessage message : messages){
-            System.out.println(message);
-        }
-        return messages;
+        mail.postMailModule();
     }
-
-    public List<GmailMessage> getMyMail() {
-        return myMail;
-    }*/
 }

@@ -2,8 +2,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -78,7 +80,8 @@ public class MessageJson
         this._subject = _subject;
     }
 
-    public MessageJson(Message msg, int id) {
+
+    public MessageJson(Message msg, int id) throws IOException, MessagingException {
 
         setId(id);
         try {
@@ -87,8 +90,6 @@ public class MessageJson
             setSendDate(msg.getSentDate().toString());
             setSubject(msg.getSubject().toString());
             setFolder(msg.getFolder().toString());
-        } catch (IOException e) {
-            System.err.println("Mail received is invalid !");
         } catch (MessagingException e) {
             System.err.println("Mail received is invalid !");
         }
