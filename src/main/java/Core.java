@@ -11,20 +11,20 @@ import static spark.Spark.*;
 
 public class Core {
     public static void main(String[] args) {
-        //TwitterModule twitos = new TwitterModule();
+        TwitterModule twitos = new TwitterModule();
         FacebookModule facebook = new FacebookModule();
         MailModule mail = new MailModule();
         Database database = new Database();
 
         List<Modules> ModuleList = new ArrayList<>();
-        //ModuleList.add(twitos);
+        ModuleList.add(twitos);
         ModuleList.add(facebook);
         ModuleList.add(mail);
 
-        //twitos.getTwitterListener().setFacebookModule(facebook);
-        //twitos.getTwitterListener().setMailModule(mail);
+        twitos.getTwitterListener().setFacebookModule(facebook);
+        twitos.getTwitterListener().setMailModule(mail);
 
-        /*get("/get/twitos", (request, response) -> {
+        get("/get/twitos", (request, response) -> {
             return twitos.getTweet();
         });
 
@@ -38,7 +38,7 @@ public class Core {
             System.out.println("We are going to display you all new tweet: ");
             twitos.displayNewTweets();
             return "It works well !";
-        });*/
+        });
 
         post("/get/facebook", (request, response) -> facebook.postData(request, response));
 
