@@ -64,10 +64,10 @@ public class MailModule extends Modules {
     public ArrayList<String> getAllMailModule()
     {
         get("/mail/all", (req, res) -> {
-            String host = "pop.gmail.com";// change accordingly
+            String host = "pop.gmail.com";
             String mailStoreType = "pop3";
-            String username = "grattepanche.robin@gmail.com";// change accordingly
-            String password = "azerty--66";// change accordingly
+            String username = "grattepanche.robin@gmail.com";
+            String password = "azerty--66";
 
             Message[] all = UserService.getAllMail(host, mailStoreType, username, password);
             ArrayList<ArrayList<String>> messages = new ArrayList<ArrayList<String>>();
@@ -84,19 +84,27 @@ public class MailModule extends Modules {
 
     public String postMailModule()
     {
-        post("/mail/sendMail/", (req, res) -> {
-            //mail.sendMail();
+        post("/mail/sendMail", (req, res) -> {
             String to = req.queryParams("to");
             String subject = req.queryParams("subject");
             String content = req.queryParams("content");
-            UserService.sendMail(to, subject, content);
-            res.status(200);
-            return "200 OK";
+            if(to == null)
+                return "401 Unauthorized";
+            if (subject == null)
+                subject = "";
+            if (content == null)
+                content = "";
+            String out = UserService.sendMail(to, subject, content);
+            if (out == "200 OK") {
+                res.status(200);
+                return "200 OK";
+            }
+            return "400 send mail fail";
         });
-        return null;
+        return "400 send mail fail";
     }
 
-    public String postMailReactModule(String to, String subject, String content)
+    public static String postMailReactModule(String to, String subject, String content)
     {
      UserService.sendMail(to, subject, content);
      return "200 OK";
