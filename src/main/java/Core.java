@@ -52,7 +52,7 @@ public class Core {
             String email = request.queryParams("email");
             String password = request.queryParams("password");
             String userName = request.queryParams("username");
-            Database.Subscribe(fullName, email, userName, password);
+            database.Subscribe(fullName, email, userName, password);
             mail.postMailReactModule(email, "Merci " + userName + " pour votre inscription",
                     "Vous êtes bien inscrit sur notre api\nUsername = " + userName + "\nPassword = " + password);
 
@@ -64,7 +64,7 @@ public class Core {
             return Database.getInfo(email);
         });
 
-        post("/delete/user/", (request, response) -> {
+        delete("/delete/user/", (request, response) -> {
             String email = request.queryParams("email");
             Database.deleteUser(email);
 
