@@ -40,16 +40,12 @@ public class ModuleManager {
         dropboxModule.getFilesModule();
         dropboxModule.getFilesSpesific();
 
-        get("/get/twitos", (request, response) -> {
+        get("/twitter/get", (request, response) -> {
             return (getTwitt());
         });
 
-        post("/post/twitter", (request, response) -> {
+        post("/twitter/post", (request, response) -> {
             postTwitt(request, response);
-            return "Worked";
-        });
-
-        get("/displayTweet/", (request, response) -> {
             return "Worked";
         });
 
@@ -73,12 +69,12 @@ public class ModuleManager {
             return "Worked";
         });
 
-        get("/info/user/:email", (request, response) -> {
+        get("/user/info/:email", (request, response) -> {
             String email = request.params(":email");
             return Database.getInfo(email);
         });
 
-        delete("/delete/user/", (request, response) -> {
+        delete("/user/delete/", (request, response) -> {
             String email = request.queryParams("email");
             Database.deleteUser(email);
             return "Worked";
