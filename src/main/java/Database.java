@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Database {
     public static Connection createConnection()
@@ -46,6 +43,44 @@ public class Database {
             preparedStatement.setString(2, mail);
             preparedStatement.setString(3, userName);
             preparedStatement.setString(4, password);
+            int i= preparedStatement.executeUpdate();
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getInfo(String mail)
+    {
+        String info = "";
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        try
+        {
+            con = createConnection();
+            String query = "SELECT * from users where Email=\'" + mail + "\'" ; //Insert user details into the table 'USERS'
+            preparedStatement = con.prepareStatement(query); //Making use of prepared statements here to insert bunch of data
+            ResultSet i= preparedStatement.executeQuery(query);
+            i.first();
+            info += i.getString("Email") + " ";
+            info += i.getString("userName") + " ";
+            info += i.getString("fullName");
+        }
+        catch(SQLException e) {
+            info += "Something went wrong";
+        }
+        return info;
+    }
+
+    public static void deleteUser(String mail)
+    {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        try
+        {
+            con = createConnection();
+            String query = "DELETE from users where Email=\'" + mail + "\' and admins IS NULL" ; //Insert user details into the table 'USERS'
+            preparedStatement = con.prepareStatement(query); //Making use of prepared statements here to insert bunch of data
             int i= preparedStatement.executeUpdate();
         }
         catch(SQLException e) {
