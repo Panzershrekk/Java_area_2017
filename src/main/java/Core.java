@@ -59,6 +59,18 @@ public class Core {
             return "Worked";
         });
 
+        get("/info/user/:email", (request, response) -> {
+            String email = request.params(":email");
+            return Database.getInfo(email);
+        });
+
+        post("/delete/user/", (request, response) -> {
+            String email = request.queryParams("email");
+            Database.deleteUser(email);
+
+            return "Worked";
+        });
+
         mail.getAllMailModule();
         mail.getFromMailModule();
         mail.getUnreadMailModule();
