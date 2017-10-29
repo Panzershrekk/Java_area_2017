@@ -46,9 +46,6 @@ public interface UserService {
                 out.add(message);
             }
 
-                //close the store and folder objects
-            emailFolder.close(false);
-            store.close();
             return out;
 
             } catch (NoSuchProviderException e) {
@@ -69,11 +66,9 @@ public interface UserService {
             Folder inbox = store.getFolder( "INBOX" );
             inbox.open( Folder.READ_ONLY );
 
-            // Fetch unseen messages from inbox folder
             Message[] messages = inbox.search(
                     new FlagTerm(new Flags(Flags.Flag.SEEN), false));
 
-            // Sort messages from recent to oldest
             Arrays.sort( messages, (m1, m2 ) -> {
                 try {
                     return m2.getSentDate().compareTo( m1.getSentDate() );
@@ -97,8 +92,6 @@ public interface UserService {
 
         public static Message[] getAllMail(String host, String storeType, String user, String password) {
             try {
-
-                //create properties field
                 Properties properties = new Properties();
 
                 properties.put("mail.pop3.host", host);
@@ -106,16 +99,13 @@ public interface UserService {
                 properties.put("mail.pop3.starttls.enable", "true");
                 Session emailSession = Session.getDefaultInstance(properties);
 
-                //create the POP3 store object and connect with the pop server
                 Store store = emailSession.getStore("pop3s");
 
                 store.connect(host, user, password);
 
-                //create the folder object and open it
                 Folder emailFolder = store.getFolder("INBOX");
                 emailFolder.open(Folder.READ_ONLY);
 
-                // retrieve the messages from the folder in an array and print it
                 Message[] messages = emailFolder.getMessages();
                 System.out.println("messages.length---" + messages.length);
 
@@ -130,7 +120,6 @@ public interface UserService {
 
                 }
 
-                //close the store and folder objects
                 emailFolder.close(false);
                 store.close();
                 return messages;
@@ -144,7 +133,7 @@ public interface UserService {
             return null;
         }
 
-    public static void sendMail(String to, String subject, String content){
+    public static String sendMail(String to, String subject, String content){
             final String username = "grattepanche.robin@gmail.com";
             final String password = "azerty--66";
 
@@ -175,7 +164,9 @@ public interface UserService {
                 System.out.println("Done");
 
             } catch (MessagingException e) {
-                throw new RuntimeException(e);
+                System.err.println("ERROR: bad parameter");
+                return("400 bad request: bad parameter\n");
             }
+            return "200 OK";
         }
 }

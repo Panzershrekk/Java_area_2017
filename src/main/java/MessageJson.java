@@ -89,7 +89,6 @@ public class MessageJson
             setFrom(msg.getFrom()[0].toString());
             setSendDate(msg.getSentDate().toString());
             setSubject(msg.getSubject().toString());
-            setFolder(msg.getFolder().toString());
         } catch (MessagingException e) {
             System.err.println("Mail received is invalid !");
         }
@@ -99,7 +98,6 @@ public class MessageJson
         ArrayList<String> out = new ArrayList<String>();
 
         out.add(this.getSendDate());
-        out.add(this.getFolder());
         out.add(this.getFrom());
         out.add(this.getContent());
         out.add(this.getSubject());
