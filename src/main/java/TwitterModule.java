@@ -15,7 +15,6 @@ public class TwitterModule extends Modules {
         setModuleName("Twitter");
         try {
             ConfigurationBuilder cb = new ConfigurationBuilder();
-
             cb.setDebugEnabled(true)
                     .setOAuthConsumerKey("hAVBTJykgQyF6bkxsSNmTs7mj")
                     .setOAuthConsumerSecret("dnr2QSlGlq5dyiecgZqLDBdtqYpfXN7a5MCwH9AkgYAozgrBJ6")
