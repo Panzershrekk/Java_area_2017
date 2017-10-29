@@ -4,6 +4,7 @@ import spark.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
@@ -12,19 +13,32 @@ public class ModuleManager {
     FacebookModule facebook = new FacebookModule();
     MailModule mail = new MailModule();
     Database database = new Database();
+    DropboxModule dropboxModule = new DropboxModule(mail);
     List<Modules> ModuleList = new ArrayList<>();
 
     public void init() {
         ModuleList.add(twitter);
         ModuleList.add(facebook);
         ModuleList.add(mail);
+        ModuleList.add(dropboxModule);
+        ModuleList.add(database);
 
         twitter.getTwitterListener().setFacebookModule(facebook);
         twitter.getTwitterListener().setMailModule(mail);
+
         mail.getAllMailModule();
         mail.getFromMailModule();
         mail.getUnreadMailModule();
         mail.postMailModule();
+
+        new Thread(() -> {
+           while (true) {
+               dropboxModule.dropBoxCore();
+           }
+        }).start();
+
+        dropboxModule.getFilesModule();
+        dropboxModule.getFilesSpesific();
 
         get("/get/twitos", (request, response) -> {
             return (getTwitt());
@@ -36,7 +50,6 @@ public class ModuleManager {
         });
 
         get("/displayTweet/", (request, response) -> {
-            getNewTwitt();
             return "Worked";
         });
 
@@ -49,9 +62,25 @@ public class ModuleManager {
             return (facebookCallback(request, response));
         });
 
-
         post("/subscribe/new/", (request, response) -> {
-            suscribeCustomer(request, response);
+            String fullName = request.queryParams("fullname");
+            String email = request.queryParams("email");
+            String password = request.queryParams("password");
+            String userName = request.queryParams("username");
+            database.Subscribe(fullName, email, userName, password);
+            mail.postMailReactModule(email, "Merci " + userName + " pour votre inscription",
+                    "Vous êtes bien inscrit sur notre api\nUsername = " + userName + "\nPassword = " + password);
+            return "Worked";
+        });
+
+        get("/info/user/:email", (request, response) -> {
+            String email = request.params(":email");
+            return Database.getInfo(email);
+        });
+
+        delete("/delete/user/", (request, response) -> {
+            String email = request.queryParams("email");
+            Database.deleteUser(email);
             return "Worked";
         });
     }
@@ -65,10 +94,6 @@ public class ModuleManager {
         twitter.postTweet(msg, ModuleList);
     }
 
-    public void getNewTwitt() {
-        twitter.displayNewTweets();
-    }
-
     public void facebokUpdate(Request request, Response response) {
         String post = facebook.postData(request, response);
         mail.postMailReactModule("grattepanche.robin@gmail.com", "New post on facebook", post);
@@ -76,15 +101,5 @@ public class ModuleManager {
 
     public String facebookCallback(Request request, Response response) {
         return (facebook.getSuscribe(request, response));
-    }
-
-    public void suscribeCustomer(Request request, Response response) {
-        String fullName = request.queryParams("fullname");
-        String email = request.queryParams("email");
-        String password = request.queryParams("password");
-        String userName = request.queryParams("username");
-        Database.Subscribe(fullName, email, userName, password);
-        mail.postMailReactModule(email, "Merci " + userName + " pour votre inscription",
-                "Vous êtes bien inscrit sur notre api\nUsername = " + userName + "\nPassword = " + password);
     }
 }

@@ -1,6 +1,6 @@
 import java.sql.*;
 
-public class Database {
+public class Database extends Modules{
     public static Connection createConnection()
     {
         Connection con = null;
