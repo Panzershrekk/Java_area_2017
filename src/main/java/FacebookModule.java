@@ -2,16 +2,21 @@ import facebook4j.*;
 import facebook4j.auth.AccessToken;
 import facebook4j.conf.ConfigurationBase;
 import facebook4j.conf.ConfigurationBuilder;
+import facebook4j.internal.org.json.JSONArray;
 import facebook4j.internal.org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public class FacebookModule extends Modules {
 
     private Facebook facebook;
-    private String mode = "suscribe";
+    private String mode = "subscribe";
     private String verifyToken = "123456789";
     private String hub = "";
+    private String msg = "";
 
     public FacebookModule() {
 
@@ -19,10 +24,10 @@ public class FacebookModule extends Modules {
         try {
             ConfigurationBuilder cb = new ConfigurationBuilder();
             cb.setDebugEnabled(true)
-                    .setOAuthAppId("748909205316555")
-                    .setOAuthAppSecret("2a0e3d5c7be1b2453e1e4ecb9fd0e040")
+                    .setOAuthAppId("127406281303958")
+                    .setOAuthAppSecret("243701dadc53d3879683e0d8e2bff36c")
                     .setOAuthPermissions("publish_actions")
-                    .setOAuthAccessToken("EAAKpIQMm48sBAGlZA5Nrb6y7178GJkkIotp4ZABKifdy6nQFhFjbbXe08uZAvGRU3UxqnArXREaWkqIdXnV1qEoYp3FE0fX1BINnw5XCNBzGMkkXPj3w7DkgN1ySeYjfLkV8cH5sJlWG5NlG6L71Lf3Li4vlrrd8grV9GxXEjsNZBZB4dKZBoMlcJZCzJt0bpOf9NjV8a5JdKGn5JnzjfKeAwA7sSuKVePvWr4eOhTR3wZDZD");
+                    .setOAuthAccessToken("EAABz4BYjp5YBAH9BtbDtz3RqSQwmY8MSQ1mqPZBLanDDTmIrZCrMQwwlSb3XZCIv1x7RdX8pE083OJViJOJHYXFVZBmvSdxPoHRk644QHdeZBmFCPQlNhp5ZCmVpP5GXiQ6E4ZCUdUcZCkOlO2tWZBlZAmhHPwzjjNUpidfp9UAK0j8cweMcZCHSF437LdY5RNnTBLv9FrIvTkHZBN4EjBZCixZAdZBMoHSHel5KvbzUrxqpNpmxxTy8EVGTA7C");
             FacebookFactory fb = new FacebookFactory(cb.build());
             this.facebook = fb.getInstance();
         }
@@ -76,19 +81,19 @@ public class FacebookModule extends Modules {
             return (hub);
         }
         response.status(200);
-        return ("");
+        return (hub);
     }
 
     public String postData(Request request, Response response) {
-        System.out.println(request.body());
         try {
-            JSONObject jsonObj = new JSONObject(request.body());
-            System.out.println("Json = " + jsonObj);
+            JSONObject tmp = new JSONObject(request.body());
+            String entry = (String)tmp.get("entry").toString();
+            return (entry);
         }
         catch (Exception e) {
-            e.fillInStackTrace();
+            e.printStackTrace();
         }
         response.status(200);
-        return (hub);
+        return (msg);
     }
 }
