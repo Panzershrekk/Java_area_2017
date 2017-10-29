@@ -81,26 +81,6 @@ public class TwitterModule extends Modules {
         }
     }
 
-    public void displayNewTweets() {
-        try {
-            ResponseList<Status> newTimeline = twitter.getUserTimeline();
-            if (newTimeline.removeAll((timeline))) {
-                if (newTimeline.isEmpty()) {
-                    System.out.println("There is no new tweet");
-                } else {
-                    for (Status s :
-                            newTimeline) {
-                        System.out.println("New Tweet : " + s.getText());
-                    }
-                    timeline = twitter.getUserTimeline();
-                }
-            }
-            //TwitterUtils.createStream(jssc);
-        }
-        catch (TwitterException e) {
-            System.out.println(e);
-        }
-    }
 
     public TwitterStreamInit getTwitterListener() {
         return twitterListener;
