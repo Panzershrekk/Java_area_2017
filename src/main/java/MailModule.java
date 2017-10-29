@@ -82,6 +82,10 @@ public class MailModule extends Modules {
         return null;
     }
 
+    public MailModule getInstance() {
+        return this;
+    }
+
     public String postMailModule()
     {
         post("/mail/sendMail/", (req, res) -> {
@@ -100,18 +104,5 @@ public class MailModule extends Modules {
     {
      UserService.sendMail(to, subject, content);
      return "200 OK";
-    }
-
-    public static void main(String[] inArgs) {
-
-        MailModule mail = new MailModule();
-
-        mail.getFromMailModule();
-
-        mail.getUnreadMailModule();
-
-        mail.getAllMailModule();
-
-        mail.postMailModule();
     }
 }
